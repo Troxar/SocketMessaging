@@ -16,6 +16,7 @@ namespace SocketMessaging.ListenerConsoleClient
 
             if (listener != null)
             {
+                listener.ConnectionAccepted += ConnectionAccepted;
                 WriteLine($"Listening on {PORTNUMBER} port\n", ConsoleColor.Green);
             }
 
@@ -39,6 +40,12 @@ namespace SocketMessaging.ListenerConsoleClient
             }
 
             return socket;
+        }
+
+        private static void ConnectionAccepted(string remoteIP)
+        {
+            Write("Connection accepted: ", ConsoleColor.Green);
+            WriteLine(remoteIP);
         }
 
         private static void WriteLine(string value, ConsoleColor color = ConsoleColor.White)

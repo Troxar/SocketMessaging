@@ -14,12 +14,13 @@ namespace SocketMessaging.SenderConsoleClient
         {
             sender = GetSender();
 
-            if (sender != null)
+            if (sender == null)
             {
-                WriteLine($"Ready to communicate - {HOSTNAME}:{PORTNUMBER}", ConsoleColor.Green);
+                Console.ReadLine();
+                return;
             }
 
-            Console.ReadLine();
+            StartCommunicating();
 
             sender?.Dispose();
         }
@@ -39,6 +40,16 @@ namespace SocketMessaging.SenderConsoleClient
             }
 
             return socket;
+        }
+
+        static void StartCommunicating()
+        {
+            WriteLine($"Ready to communicate - {HOSTNAME}:{PORTNUMBER}", ConsoleColor.Green);
+
+            while (sender != null)
+            {
+                // TODO: send message
+            }
         }
 
         private static void WriteLine(string value, ConsoleColor color = ConsoleColor.White)
