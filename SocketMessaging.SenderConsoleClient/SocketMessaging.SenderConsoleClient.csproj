@@ -49,5 +49,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SocketMessaging.Sender\SocketMessaging.Sender.csproj">
+      <Project>{5bad6ab4-3bf5-43a1-ac51-70c66923a424}</Project>
+      <Name>SocketMessaging.Sender</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
