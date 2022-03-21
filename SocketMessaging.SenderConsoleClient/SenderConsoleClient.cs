@@ -51,13 +51,18 @@ namespace SocketMessaging.SenderConsoleClient
                 Write("\nEnter a message: ", ConsoleColor.Yellow);
                 string message = Console.ReadLine();
 
-                try
+                // TODO: 'q' to break the loop
+
+                GetAnswerResult result = sender.SendMessageAndGetAnswer(message);
+
+                if (result.IsSuccessful)
                 {
-                    sender.SendMessage(message);
+                    Write("Answer received: ", ConsoleColor.Blue);
+                    WriteLine(result.Answer);
                 }
-                catch (Exception ex)
+                else
                 {
-                    WriteLine(ex.Message, ConsoleColor.Red);
+                    WriteLine(result.Answer, ConsoleColor.Red);
                 }
             }
         }

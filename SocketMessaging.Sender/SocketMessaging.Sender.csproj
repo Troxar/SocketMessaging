@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GetAnswerResult.cs" />
     <Compile Include="SocketSender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

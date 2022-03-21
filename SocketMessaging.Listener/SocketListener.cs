@@ -70,9 +70,7 @@ namespace SocketMessaging.Listener
             try
             {
                 int charsReceived = ReceiveMessage(e);
-
-                // TODO: send confirmation
-
+                SendConfirmation(socket, charsReceived);
             }
             catch (Exception ex)
             {
@@ -90,6 +88,13 @@ namespace SocketMessaging.Listener
             handler?.Invoke(this, new MessageReceivedEventArgs(message));
 
             return message.Length;
+        }
+
+        private void SendConfirmation(Socket socket, int charsReceived)
+        {
+            string reply = $"Received {charsReceived} character(s)";
+            byte[] buffer = Encoding.UTF8.GetBytes(reply);
+            socket.Send(buffer);
         }
 
         public void Dispose()
