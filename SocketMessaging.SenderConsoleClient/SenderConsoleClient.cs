@@ -48,7 +48,17 @@ namespace SocketMessaging.SenderConsoleClient
 
             while (sender != null)
             {
-                // TODO: send message
+                Write("\nEnter a message: ", ConsoleColor.Yellow);
+                string message = Console.ReadLine();
+
+                try
+                {
+                    sender.SendMessage(message);
+                }
+                catch (Exception ex)
+                {
+                    WriteLine(ex.Message, ConsoleColor.Red);
+                }
             }
         }
 

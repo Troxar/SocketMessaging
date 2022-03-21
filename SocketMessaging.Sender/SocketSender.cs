@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace SocketMessaging.Sender
 {
@@ -15,6 +16,15 @@ namespace SocketMessaging.Sender
 
             sender = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             sender.Connect(endPoint);
+        }
+
+        public void SendMessage(string message)
+        {
+            byte[] buffer = Encoding.UTF8.GetBytes(message);
+            sender.Send(buffer);
+
+            // TODO: get answer
+
         }
 
         public void Dispose()
