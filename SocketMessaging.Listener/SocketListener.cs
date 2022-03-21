@@ -17,6 +17,9 @@ namespace SocketMessaging.Listener
         public delegate void MessageReceivedHandler(object sender, MessageReceivedEventArgs e);
         public event MessageReceivedHandler MessageReceived;
 
+        public delegate void ConnectionDroppedHandler();
+        public event ConnectionDroppedHandler ConnectionDropped;
+
         public void StartListening(string hostname, int port)
         {
             IPHostEntry entry = Dns.GetHostEntry(hostname);
@@ -67,6 +70,14 @@ namespace SocketMessaging.Listener
         {
             Socket socket = (Socket)sender;
 
+            if (!IsSocketConnected(socket))
+            {
+                ConnectionDroppedHandler handler = ConnectionDropped;
+                handler?.Invoke();
+
+                return;
+            }
+
             try
             {
                 int charsReceived = ReceiveMessage(e);
@@ -97,9 +108,26 @@ namespace SocketMessaging.Listener
             socket.Send(buffer);
         }
 
-        public void Dispose()
+        private bool IsSocketConnected(Socket socket)
+        {
+            try
+            {
+                return !(socket.Poll(1, SelectMode.SelectRead) && socket.Available == 0);
+            }
+            catch (SocketException)
+            {
+                return false;
+            }
+        }
+
+        public void StopListening()
         {
             listener?.Close();
+        }
+
+        public void Dispose()
+        {
+            StopListening();
         }
     }
 }

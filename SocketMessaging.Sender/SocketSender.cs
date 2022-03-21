@@ -51,9 +51,26 @@ namespace SocketMessaging.Sender
             return Encoding.UTF8.GetString(buffer, 0, bytesReceived);
         }
 
+        public void CloseConnection()
+        {
+            if (sender == null)
+            {
+                return;
+            }
+
+            try
+            {
+                sender.Shutdown(SocketShutdown.Both);
+            }
+            finally
+            {
+                sender.Close();
+            }
+        }
+
         public void Dispose()
         {
-            sender?.Close();
+            CloseConnection();
         }
     }
 }

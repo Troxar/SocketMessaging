@@ -21,8 +21,6 @@ namespace SocketMessaging.SenderConsoleClient
             }
 
             StartCommunicating();
-
-            sender?.Dispose();
         }
 
         private static SocketSender GetSender()
@@ -48,10 +46,18 @@ namespace SocketMessaging.SenderConsoleClient
 
             while (sender != null)
             {
-                Write("\nEnter a message: ", ConsoleColor.Yellow);
+                Write("\nEnter a message ('q' for quit): ", ConsoleColor.Yellow);
                 string message = Console.ReadLine();
 
-                // TODO: 'q' to break the loop
+                if (string.IsNullOrEmpty(message))
+                {
+                    continue;
+                }
+                else if (message == "q")
+                {
+                    sender.CloseConnection();
+                    break;
+                }
 
                 GetAnswerResult result = sender.SendMessageAndGetAnswer(message);
 

@@ -18,12 +18,14 @@ namespace SocketMessaging.ListenerConsoleClient
             {
                 listener.ConnectionAccepted += ConnectionAccepted;
                 listener.MessageReceived += MessageReceived;
+                listener.ConnectionDropped += ConnectionDropped;
+
                 WriteLine($"Listening on {PORTNUMBER} port\n", ConsoleColor.Green);
             }
 
             Console.ReadLine();
 
-            listener?.Dispose();
+            listener.StopListening();
         }
 
         private static SocketListener GetListener()
@@ -53,6 +55,13 @@ namespace SocketMessaging.ListenerConsoleClient
         {
             Write("Message received: ", ConsoleColor.Blue);
             WriteLine(e.Message);
+        }
+
+        private static void ConnectionDropped()
+        {
+            WriteLine("\nConnection dropped by client\n", ConsoleColor.Green);
+            listener.StartAccepting();
+            WriteLine($"Listening on {PORTNUMBER} port\n", ConsoleColor.Green);
         }
 
         private static void WriteLine(string value, ConsoleColor color = ConsoleColor.White)
