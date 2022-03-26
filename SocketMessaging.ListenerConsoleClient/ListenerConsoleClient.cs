@@ -5,13 +5,17 @@ namespace SocketMessaging.ListenerConsoleClient
 {
     class ListenerConsoleClient
     {
-        private const string HOSTNAME = "localhost";
-        private const int PORTNUMBER = 11000;
-
+        private static int PortNumber;
         private static SocketListener listener;
 
         static void Main()
         {
+            if (!AskForPortNumber())
+            {
+                Console.ReadLine();
+                return;
+            }
+            
             listener = GetListener();
 
             if (listener != null)
@@ -20,12 +24,30 @@ namespace SocketMessaging.ListenerConsoleClient
                 listener.MessageReceived += MessageReceived;
                 listener.ConnectionDropped += ConnectionDropped;
 
-                WriteLine($"Listening on {PORTNUMBER} port\n", ConsoleColor.Green);
+                WriteLine($"Listening on {PortNumber} port\n", ConsoleColor.Green);
             }
 
             Console.ReadLine();
 
             listener.StopListening();
+        }
+
+        private static bool AskForPortNumber()
+        {
+            Write("Enter a port number: ", ConsoleColor.Yellow);
+            string input = Console.ReadLine();
+
+            try
+            {
+                PortNumber = int.Parse(input);
+            }
+            catch (Exception ex)
+            {
+                WriteLine($"\n{ex.Message}", ConsoleColor.Red);
+                return false;
+            }
+
+            return true;
         }
 
         private static SocketListener GetListener()
@@ -34,11 +56,11 @@ namespace SocketMessaging.ListenerConsoleClient
 
             try
             {
-                socket.StartListening(HOSTNAME, PORTNUMBER);
+                socket.StartListening(PortNumber);
             }
             catch (Exception ex)
             {
-                WriteLine(ex.Message, ConsoleColor.Red);
+                WriteLine($"\n{ex.Message}", ConsoleColor.Red);
                 return null;
             }
 
@@ -61,7 +83,7 @@ namespace SocketMessaging.ListenerConsoleClient
         {
             WriteLine("\nConnection dropped by client\n", ConsoleColor.Green);
             listener.StartAccepting();
-            WriteLine($"Listening on {PORTNUMBER} port\n", ConsoleColor.Green);
+            WriteLine($"Listening on {PortNumber} port\n", ConsoleColor.Green);
         }
 
         private static void WriteLine(string value, ConsoleColor color = ConsoleColor.White)

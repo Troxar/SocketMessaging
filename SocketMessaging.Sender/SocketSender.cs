@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -10,10 +11,15 @@ namespace SocketMessaging.Sender
         private const int BUFFERSIZE = 1024;
         private Socket sender;
 
-        public void Initialize(string hostname, int port)
+        private IPAddress GetHostIPAddress(string hostname)
         {
             IPHostEntry entry = Dns.GetHostEntry(hostname);
-            IPAddress address = entry.AddressList[0];
+            return entry.AddressList.FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
+        }
+
+        public void Initialize(string hostname, int port)
+        {
+            IPAddress address = GetHostIPAddress(hostname);
             IPEndPoint endPoint = new IPEndPoint(address, port);
 
             sender = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);

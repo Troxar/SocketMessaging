@@ -5,13 +5,19 @@ namespace SocketMessaging.SenderConsoleClient
 {
     class SenderConsoleClient
     {
-        private const string HOSTNAME = "localhost";
-        private const int PORTNUMBER = 11000;
+        private static string HostName;
+        private static int PortNumber;
 
         private static SocketSender sender;
 
         static void Main()
         {
+            if (!AskForConnectionParams())
+            {
+                Console.ReadLine();
+                return;
+            }
+
             sender = GetSender();
 
             if (sender == null)
@@ -23,17 +29,38 @@ namespace SocketMessaging.SenderConsoleClient
             StartCommunicating();
         }
 
+        private static bool AskForConnectionParams()
+        {
+            Write("Enter a host name or IP address: ", ConsoleColor.Yellow);
+            HostName = Console.ReadLine();
+
+            Write("Enter a port number: ", ConsoleColor.Yellow);
+            string input = Console.ReadLine();
+
+            try
+            {
+                PortNumber = int.Parse(input);
+            }
+            catch (Exception ex)
+            {
+                WriteLine($"\n{ex.Message}", ConsoleColor.Red);
+                return false;
+            }
+
+            return true;
+        }
+
         private static SocketSender GetSender()
         {
             SocketSender socket = new SocketSender();
 
             try
             {
-                socket.Initialize(HOSTNAME, PORTNUMBER);
+                socket.Initialize(HostName, PortNumber);
             }
             catch (Exception ex)
             {
-                WriteLine(ex.Message, ConsoleColor.Red);
+                WriteLine($"\n{ex.Message}", ConsoleColor.Red);
                 return null;
             }
 
@@ -42,7 +69,7 @@ namespace SocketMessaging.SenderConsoleClient
 
         static void StartCommunicating()
         {
-            WriteLine($"Ready to communicate - {HOSTNAME}:{PORTNUMBER}", ConsoleColor.Green);
+            WriteLine($"Ready to communicate - {HostName}:{PortNumber}", ConsoleColor.Green);
 
             while (sender != null)
             {

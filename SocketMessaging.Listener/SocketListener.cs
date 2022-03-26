@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -20,12 +21,17 @@ namespace SocketMessaging.Listener
         public delegate void ConnectionDroppedHandler();
         public event ConnectionDroppedHandler ConnectionDropped;
 
-        public void StartListening(string hostname, int port)
+        private IPAddress GetHostIPAddress()
         {
-            IPHostEntry entry = Dns.GetHostEntry(hostname);
-            IPAddress address = entry.AddressList[0];
-            IPEndPoint endPoint = new IPEndPoint(address, port);
+            IPHostEntry entry = Dns.GetHostEntry(Dns.GetHostName());
+            return entry.AddressList.FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
+        }
 
+        public void StartListening(int port)
+        {
+            IPAddress address = GetHostIPAddress();
+            IPEndPoint endPoint = new IPEndPoint(address, port);
+            
             listener = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             listener.Bind(endPoint);
             listener.Listen(10);
